@@ -1,36 +1,21 @@
 // Variables Generales para guardar resultados
-var a = "0"
-var b = 1
-var c = 0
-var d = 0
-var i = 0
-var ii = 0
-var resultado = 0
-var tag= ""
-var operaciones = 0
+var a = "0"  // Valor para el Display
+var b = 1    // Define el largo de los numeros en la pantalla
+var c = 0    // Se Asigna el valor de tag para poder evaluarlo si es numerico o si en su defecto se dio click a un elemento con ID
+var d = 0    // Variable para saber si el signo negativo se uso
+var f = ""    //Cuenta la cantidad de veces que se apreta una tecla que es un operador y se reinicia cuando es 0
+var ptag = ""    // Variable para asignar el tag anterior
+var i = 0    // Cuenta la cantidad de veces que se ha ingresado el punto
+var ii = 0   // guardar el ultimo valor de "a" para seguir haciendo la operacion cuando se la da Click
+var resultado = 0 // Guarda el resultado para seguir aplicando las operaciones que se necesiten
+var tag= ""  // Devuelve el id que se presiona en el navegador
+var operaciones = 0  // Asigna un valor numerico a las operaciones de suma, resta, multiplicacion, division y raiz
 
+// las teclas generales se definen por aparte para trabajarlas por aparte y no se vean afectadas por las funciones
+// esta nota es para el evaluador.....decidi utilizarlo asi porque al ser mi primer proyecto grande en JS me gusto
+// el hecho de tenerlas clasras arriba
 
-// Se restablecen todos los valores a su estado inicial
-document.getElementById('on').addEventListener("click",function(){
-document.getElementById('display').innerHTML = 0
-                a = "0"
-                b = 1
-                c = 0
-                d = 0
-                i = 0
-                resultado = 0
-                tag= ""
-                operaciones = 0
-})
-
-function limpiarParaOperadores(){
-  a = "0"
-  b = 1
-  c = 0
-  d = 0
-  tag= ""
-}
-function elemento(e){
+function Calculadora(e){
   if (e.srcElement)
     tag = e.srcElement.id;
   else if (e.target)
@@ -39,117 +24,154 @@ function elemento(e){
       c = parseInt(tag)
       else
       c = tag
+      if ( tag == "mas" || tag == "menos" || tag == "por" || tag == "dividido" || tag == "igual" ) {
+        if ( operaciones === "igual" && tag !== "igual" ) {
+          ii = 0
+          f = operaciones
+        }
+        evaluarOperacion()
+      }
 
-    if (c >= 0 && c <= 9 ) {
-document.getElementById(c).addEventListener("click",function(){
-  // Agregar un numero si el valor inicial no es igual a 0
-  if (a === "0" && b < 9 && c >= 1) {
-                        a =  "" + c
-                      document.getElementById('display').innerHTML =  a
-                      c = ""
-                        // Agregar un valor cuando "a" es diferente de 0 como valor inicial
-                      }else if(a !== "0" && b < 9){
-                        a = "" + a + c
-                        document.getElementById('display').innerHTML = a
-                        b = a.length
-                        c= ""
-                    }
-                })
-} else if (tag === "punto" && i === 0 ) {
-  c = "."
-  a = "" + a + c
-  document.getElementById('display').innerHTML = a
-  c = ""
-  b = a.length
-  i++
-} else if ( d === 0 && tag === "sign" ) {
-  a = "-" + a
-  document.getElementById('display').innerHTML = a
+  if ( c >= 0 && c <= 9 ) {
+    return valorNumerico();
+  }
+}
+// Se restablecen todos los valores a su estado inicial
+document.getElementById('on').addEventListener("click",function(){
+document.getElementById('display').innerHTML = 0
+                a = "0"
+                b = 1
+                c = 0
+                d = 0
+                i = 0
+                ii = 0
+                resultado = 0
+                tag= ""
+                ptag= ""
+                operaciones = 0
+})
+document.getElementById('punto').addEventListener("click",function(){  // Agregar un punto
+b = a.length
+  if ( i === 0 && b < 9) {
+    c = "."
+    a = "" + a + c
+    document.getElementById('display').innerHTML = a
+    c = ""
+    i++
+  }
+})
+document.getElementById('sign').addEventListener("click",function(){ // Agregar el signo Negativo
+b = a.length
+  if ( d === 0 && b < 9) {
+  ii = "-" + ii
+  document.getElementById('display').innerHTML = ii
   d++
-} else if (d === 1 && tag === "sign") {
-  a = a.substring(1,a.length)
-  d--
-  document.getElementById('display').innerHTML = a
-}
+} else if (d === 1 && b <= 9) {
+    ii = ii.substring(1,a.length)
+    d--
+    document.getElementById('display').innerHTML = ii
+  }
+})
+/**function clickTecla(element,nuevoalto){
+  var Alto
+  element.style.height =
+}*/
+function valorNumerico(){
+  document.getElementById(c).addEventListener("click",function(){
+    if (a === "0" && b < 9 && c >= 1) {
+          a =  "" + c
+        document.getElementById('display').innerHTML =  a
+        c = ""
+          // Agregar un valor cuando "a" es diferente de 0 como valor inicial
+    } else if (a !== "0" && b < 9){
+          a = "" + a + c
+          document.getElementById('display').innerHTML = a
+          b = a.length
+          c= ""
+    }else if (a === "0" && parseFloat(ii) > 0 ) {
+      ii = 0
+    } {
 
-document.getElementById(c).addEventListener("click",function(){
-if (tag === "mas" && operaciones == 0) { // Calcula los resuldados cuando se suma
-  resultado = parseInt(a)
-  operaciones = 1
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = "0"
-} else if ( tag === "mas"  && operaciones != 0) {
-  resultado = resultado + parseInt(a)
-  operaciones = 1
-  limpiarParaOperadores();
+    }
+    ii = a
+  })
+}
+function clickOperador(){
+  a = "0"
+  b = 1
+  c = 0
+  d = 0
+  if (resultado !== ""){
   document.getElementById("display").innerHTML = resultado
-} else if ( tag === "igual" && operaciones == 1) {
-  if (a !== "0" ){
-  ii = a}
-  resultado = resultado +  parseInt(ii)
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = resultado
-} else if (tag === "menos" && operaciones == 0) { // Calcula los resuldados cuando se resta
-  resultado = parseInt(a)
-  operaciones = 2
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = "0"
-} else if ( tag === "menos"  && operaciones != 0) {
-  resultado = resultado - parseInt(a)
-  operaciones = 2
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = resultado
-} else if ( tag === "igual" && operaciones == 2) {
-  if (a !== "0" ){
-  ii = a}
-  resultado = resultado -  parseInt(ii)
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = resultado
-} else if (tag === "por" && operaciones == 0) { // Calcula los resuldados cuando se multiplica
-  resultado = parseInt(a)
-  operaciones = 3
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = "0"
-} else if ( tag === "por"  && operaciones != 0) {
-  resultado = resultado * parseInt(a)
-  operaciones = 3
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = resultado
-} else if ( tag === "igual" && operaciones == 3) {
-  if (a !== "0" ){
-  ii = a}
-  resultado = resultado *  parseInt(ii)
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = resultado
-} else if (tag === "dividido" && operaciones == 0) { // Calcula los resuldados cuando se divide
-  resultado = parseInt(a)
-  operaciones = 4
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = "0"
-} else if ( tag === "dividido"  && operaciones != 0) {
-  if (a === "0") {
-    resultado = parseFloat(resultado)
-    operaciones = 4
-    limpiarParaOperadores();
-    document.getElementById("display").innerHTML = resultado
-  } else {
-  resultado = parseFloat(resultado) / parseFloat(a)
-  operaciones = 4
-  limpiarParaOperadores();
-  if ( (resultado + "").length > 9) {
-    resultado = resultado.toFixed(7)
   }
-  document.getElementById("display").innerHTML = resultado
 }
-} else if ( tag === "igual" && operaciones == 4) {
-  if (a !== "0" ){
-  ii = a}
-  resultado = resultado /  parseInt(ii)
-  if ( (resultado + "").length > 9) {
-    resultado = resultado.toFixed(7)
+function evaluarOperacion(){
+operaciones = tag
+  switch (ptag) {
+    case "mas": // Calcula los resuldados cuando se suma
+      if (tag !== "igual" && a == "0") {
+        ii = 0
+      }
+      resultado = parseInt(resultado) + parseInt(ii)
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+    break;
+    case "menos": // Calcula los resuldados cuando se resta
+        resultado = parseInt(resultado) - parseInt(ii)
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+      break;
+    case "por": // Calcula los resuldados cuando se multiplica
+        if (f !== "igual") {
+          resultado = parseInt(resultado) * parseInt(ii)
+          f = ""
+        } else if (f == ""){
+          resultado = parseInt(resultado) * parseInt(ii)
+        }
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+      break;
+    case "raiz": // Calcula los resuldados cuando se multiplica
+        if (f !== "igual") {
+          resultado = Math.sqrt(parseInt(ii))
+          f = ""
+        }
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+      break;
+    case "dividido": // Calcula los resuldados cuando se multiplica
+        if ((ii === "0" || ii === 0 || a == "0" )&& f !== "igual" ) {
+          resultado = parseFloat(resultado)
+          f = ""
+        } else {
+          resultado = parseFloat(resultado) / parseFloat(ii)
+        }
+        if ( (resultado + "").length > 9) {
+          resultado = resultado.toFixed(7)
+        }
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+      break;
+    default: // Devuelve los valores que se obtienen al dar igual segun el ultimo Operador
+      if (f !== "") {
+        ptag = tag
+console.log('si esta llegando aqui');
+        return evaluarOperacion()
+
+      } else {
+      resultado = parseInt(ii)
+      ptag = tag
+      return clickOperador()
+      }
+    }
   }
-  limpiarParaOperadores();
-  document.getElementById("display").innerHTML = resultado
-}
-});
-}

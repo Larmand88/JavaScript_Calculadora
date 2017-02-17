@@ -1,53 +1,21 @@
-var Calculadora = {function(num1,num2){
-  var resultado = 0
-
-  function actualizarResuldato(nuevoResultado){
-    resultado = nuevoResultado
-  }
-  return {
-    sumar: function(){
-      var resultado = num1 + num2
-      actualizarResuldato(resultado)
-    },
-    restar: function(){
-      var resultado = num1 -num2
-      actualizarResuldato(resultado)
-    },
-    multiplicar: function(){
-      var resultado = num1 * num2
-      actualizarResuldato(resultado)
-    },
-    dividir: function(){
-      var resultado = num1 / num2
-      actualizarResuldato(resultado)
-    },
-    raiz: function(){
-      var resultado = num1 +num2
-      actualizarResuldato(resultado)
-    },
-    resultado: function(){
-      return resultado
-    }
-  }
-}
-
 // Variables Generales para guardar resultados
-var a = "0"
-var b = 1
-var c = 0
-var d = 0
-var i = 0
-var resultado = 0
-var tag= ""
-// Se restablecen todos los valores a su estado inicial
-document.getElementById('on').addEventListener("click",function(){
-document.getElementById('display').innerHTML = 0
-              a = "0"
-              b = 1
-              c = ""
-              i = 0
-})
-function elemento(e){
+var a = "0"  // Valor para el Display
+var b = 1    // Define el largo de los numeros en la pantalla
+var c = 0    // Se Asigna el valor de tag para poder evaluarlo si es numerico o si en su defecto se dio click a un elemento con ID
+var d = 0    // Variable para saber si el signo negativo se uso
+var f = 0    //Cuenta la cantidad de veces que se apreta una tecla que es un operador y se reinicia cuando es 0
+var ptag = ""    // Variable para asignar el tag anterior
+var i = 0    // Cuenta la cantidad de veces que se ha ingresado el punto
+var ii = 0   // guardar el ultimo valor de "a" para seguir haciendo la operacion cuando se la da Click
+var resultado = 0 // Guarda el resultado para seguir aplicando las operaciones que se necesiten
+var tag= ""  // Devuelve el id que se presiona en el navegador
+var operaciones = 0  // Asigna un valor numerico a las operaciones de suma, resta, multiplicacion, division y raiz
+
+// las teclas generales se definen por aparte para trabajarlas por aparte y no se vean afectadas por las funciones
+// esta nota es para el evaluador.....decidi utilizarlo asi porque al ser mi primer proyecto grande en JS me gusto
+// el hecho de tenerlas clasras arriba
+
+function Calculadora(e){
   if (e.srcElement)
     tag = e.srcElement.id;
   else if (e.target)
@@ -56,38 +24,132 @@ function elemento(e){
       c = parseInt(tag)
       else
       c = tag
-function asignarTecla(){
-    if (c >= 0 && c <= 9 ) {
-document.getElementById(c).addEventListener("click",function(){
-  // Agregar un numero si el valor inicial no es igual a 0
-  if (a === "0" && b < 9 && c >= 1) {
-                        a =  "" + c
-                      document.getElementById('display').innerHTML =  a
-                      c = ""
-                        // Agregar un valor cuando "a" es diferente de 0 como valor inicial
-                      }else if(a !== "0" && b < 9){
-                        a = "" + a + c
-                        document.getElementById('display').innerHTML = a
-                        b = a.length
-                        c= ""
-                    }
-                })
-} else if (tag === "punto" && i === 0 ) {
-  c = "."
-  a = "" + a + c
-  document.getElementById('display').innerHTML = a
-  c = ""
-  b = a.length
-  i++
-} else if ( d === 0 && tag === "sign" ) {
-  a = "-" + a
-  document.getElementById('display').innerHTML = a
+      if ( tag == "mas" || tag == "menos" || tag == "por" || tag == "dividido" || tag == "igual" ) {
+        if ((operaciones === "igual" && tag !== "igual") ) {
+          ii = 0
+          f = 0
+        }
+        evaluarOperacion()
+      }
+
+  if ( c >= 0 && c <= 9 ) {
+    return valorNumerico();
+  }
+}
+// Se restablecen todos los valores a su estado inicial
+document.getElementById('on').addEventListener("click",function(){
+document.getElementById('display').innerHTML = 0
+                a = "0"
+                b = 1
+                c = 0
+                d = 0
+                i = 0
+                ii = 0
+                resultado = 0
+                tag= ""
+                ptag= ""
+                operaciones = 0
+})
+document.getElementById('punto').addEventListener("click",function(){  // Agregar un punto
+b = a.length
+  if ( i === 0 && b < 9) {
+    c = "."
+    a = "" + a + c
+    document.getElementById('display').innerHTML = a
+    c = ""
+    i++
+  }
+})
+document.getElementById('sign').addEventListener("click",function(){ // Agregar el signo Negativo
+b = a.length
+  if ( d === 0 && b < 9) {
+  ii = "-" + ii
+  document.getElementById('display').innerHTML = ii
   d++
-} else if (d === 1 && tag === "sign") {
-  a = a.substring(1,a.length)
-  d--
-  document.getElementById('display').innerHTML = a
+} else if (d === 1 && b <= 9) {
+    ii = ii.substring(1,a.length)
+    d--
+    document.getElementById('display').innerHTML = ii
+  }
+})
+function clickTecla(element,nuevoalto){
+  var Alto
+  element.style.height =
 }
+function valorNumerico(){
+  document.getElementById(c).addEventListener("click",function(){
+    if (a === "0" && b < 9 && c >= 1) {
+          a =  "" + c
+        document.getElementById('display').innerHTML =  a
+        c = ""
+          // Agregar un valor cuando "a" es diferente de 0 como valor inicial
+    } else if (a !== "0" && b < 9){
+          a = "" + a + c
+          document.getElementById('display').innerHTML = a
+          b = a.length
+          c= ""
+    }else if (a === "0" && parseFloat(ii) > 0 ) {
+      ii = 0
+    } {
+
+    }
+    ii = a
+  })
 }
+function clickOperador(){
+  a = "0"
+  b = 1
+  c = 0
+  d = 0
+  if (resultado !== ""){
+  document.getElementById("display").innerHTML = resultado
+  }
 }
-onmousedown="elemento(event);"
+function evaluarOperacion(){
+operaciones = tag
+  switch (ptag) {
+    case "mas": // Calcula los resuldados cuando se suma
+      if (tag !== "igual" && a == "0") {
+        ii = 0
+      }
+      resultado = parseInt(resultado) + parseInt(ii)
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+    break;
+    case "menos": // Calcula los resuldados cuando se resta
+
+        resultado = parseInt(resultado) - parseInt(ii)
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+      break;
+    case "por": // Calcula los resuldados cuando se multiplica
+        resultado = parseInt(resultado) * parseInt(ii)
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+      break;
+    case "dividido": // Calcula los resuldados cuando se multiplica
+        if (ii === "0" || ii === 0 || a ) {
+          resultado = parseFloat(resultado)
+        } else {
+          resultado = parseFloat(resultado) / parseFloat(ii)
+        }
+        if ( (resultado + "").length > 9) {
+          resultado = resultado.toFixed(7)
+        }
+        if (tag !== "igual"){
+          ptag = tag
+        }
+        return clickOperador()
+      break;
+    default: // Devuelve los valores que se obtienen al dar igual segun el ultimo Operador
+      resultado = parseInt(ii)
+      ptag = tag
+      return clickOperador()
+      }
+    }
