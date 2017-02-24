@@ -54,6 +54,7 @@ document.getElementById('display').innerHTML = 0
                 tag= ""
                 ptag= ""
                 operaciones = 0
+                valoriiResultdo = 0
 })
 document.getElementById('punto').addEventListener("click",function(){  // Agregar un punto
 b = a.length
